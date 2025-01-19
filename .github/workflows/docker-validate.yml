@@ -9,6 +9,8 @@ on:
 jobs:
   lint-compose:
     runs-on: ubuntu-latest
+    environment: ".env"
+
     steps:
       # 1. Check out your code
       - name: Check out repository
