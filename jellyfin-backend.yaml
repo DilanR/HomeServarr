@@ -1,0 +1,72 @@
+name: jellyfin-backend
+
+services:
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${SERVER_ROOT}/radarr/config:/config
+      - ${JELLYFIN_MEDIA_ROOT}/Movies:/movies
+      - ${MEDIA_ROOT}:/downloads
+    ports:
+      - 7878:7878
+    networks:
+      - backend
+
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${SERVER_ROOT}/sonarr/config:/config
+      - ${JELLYFIN_MEDIA_ROOT}/Shows:/tv
+      - ${MEDIA_ROOT}:/downloads
+    ports:
+      - 8989:8989
+    networks:
+      - backend
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${SERVER_ROOT}/bazarr/config:/config
+      - ${JELLYFIN_MEDIA_ROOT}/Movies:/movies #optional
+      - ${JELLYFIN_MEDIA_ROOT}/Shows:/tv #optional
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+    networks:
+      - backend
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${SERVER_ROOT}/prowlarr/config:/config
+    ports:
+      - 9696:9696
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true

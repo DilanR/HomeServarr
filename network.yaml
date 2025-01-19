@@ -1,0 +1,61 @@
+name: network
+
+services:
+  reverse-proxy:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+      - ${SERVER_ROOT}/nginx/data:/data
+      - ${SERVER_ROOT}/nginx/letsencrypt:/etc/letsencrypt
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    networks:
+      - frontend
+      - backend
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - USER=${TRANSMISSION_USER}
+      - PASS=${TRANSMISSION_PASSWORD}
+    volumes:
+      - ${SERVER_ROOT}/transmission/config:/config
+      - ${SERVER_ROOT}/transmission/torrents:/watch
+      - ${MEDIA_ROOT}:/downloads
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    networks:
+      - backend
+    
+  flaresolverr:
+    # DockerHub mirror flaresolverr/flaresolverr:latest
+    image: 21hsmw/flaresolverr:nodriver
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      - TZ=${TZ}
+      - DRIVER=nodriver
+    ports:
+      - 8191:8191
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true
+
