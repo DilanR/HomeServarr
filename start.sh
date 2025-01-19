@@ -3,6 +3,6 @@
 sudo docker network create backend
 sudo docker network create frontend
 
-sudo docker compose -f network.yaml up -d
-sudo docker compose -f jellyfin.yaml up -d
-sudo docker compose -f jellyfin-backend.yaml up -d
+sudo docker compose -f docker-compose.network.yml up -d
+sudo docker compose -f docker-compose.jellyfin.yml up -d
+sudo docker compose -f docker-compose.jellyfin-backend.yml up -d
