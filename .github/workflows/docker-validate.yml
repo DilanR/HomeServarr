@@ -1,0 +1,26 @@
+name: Validate Docker Compose
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint-compose:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Check out your code
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # 2. Validate all Compose files in the root of repo
+      - name: Validate Docker Compose files
+        run: |
+          for file in docker-compose*.yml; do
+            [ -e "$file" ] || continue
+
+            echo "Validating $file..."
+            docker compose -f "$file" config
+            echo "$file is valid!"
+          done
