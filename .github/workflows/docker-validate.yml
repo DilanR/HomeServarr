@@ -10,18 +10,27 @@ jobs:
   lint-compose:
     runs-on: ubuntu-latest
     environment: ".env"
-
+    env:
+      TZ: ${{ vars.TZ }}
+      SERVER_ROOT: ${{ vars.SERVER_ROOT }}
+      MEDIA_ROOT: ${{ vars.MEDIA_ROOT }}
+      JELLYFIN_MEDIA_ROOT: ${{ vars.JELLYFIN_MEDIA_ROOT }}
+      
     steps:
       # 1. Check out your code
       - name: Check out repository
         uses: actions/checkout@v3
-
+        
+      - name: add secrets to local .env
+        run: |
+          echo "TRANSMISSION_USER=${{ secrets.TRANSMISSION_USER }}" >> .env
+          echo "TRANSMISSION_PASSWORD=${{ secrets.TRANSMISSION_PASSWORD }}" >> .env
+          
       # 2. Validate all Compose files in the root of repo
       - name: Validate Docker Compose files
         run: |
           for file in docker-compose*.yml; do
             [ -e "$file" ] || continue
-
             echo "Validating $file..."
             docker compose -f "$file" config
             echo "$file is valid!"
