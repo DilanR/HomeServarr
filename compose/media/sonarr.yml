@@ -1,0 +1,20 @@
+services:
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${SERVER_ROOT}/sonarr/config:/config
+      - ${JELLYFIN_MEDIA_ROOT}/Shows:/tv
+      - ${MEDIA_ROOT}:/downloads
+    ports:
+      - 8989:8989
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.${DOMAIN}`)"
+      - "traefik.http.routers.sonarr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr.tls.certresolver=myresolver"

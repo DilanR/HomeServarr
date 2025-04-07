@@ -1,0 +1,19 @@
+services:
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - LOG_LEVEL=debug
+      - TZ=${TZ}
+    volumes:
+      - ${SERVER_ROOT}/jellyseerr/config:/app/config
+    ports:
+      - 5055:5055
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyseerr.rule=Host(`request.${DOMAIN}`)"
+      - "traefik.http.routers.jellyseerr.entrypoints=websecure"
+      - "traefik.http.routers.jellyseerr.tls.certresolver=myresolver"

@@ -1,0 +1,18 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      - WEBSOCKET_ENABLED=true
+      - SIGNUPS_ALLOWED=false
+      - DOMAIN=https://pw.${DOMAIN}
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+    volumes:
+      - ${SERVER_ROOT}/vaultwarden/data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vaultwarden.rule=Host(`pw.${DOMAIN}`)"
+      - "traefik.http.routers.vaultwarden.entrypoints=websecure"
+      - "traefik.http.routers.vaultwarden.tls.certresolver=myresolver"
+      - "traefik.http.services.vaultwarden.loadbalancer.server.port=80"

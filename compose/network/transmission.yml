@@ -1,0 +1,24 @@
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - USER=${TRANSMISSION_USER}
+      - PASS=${ADMIN_PASSWORD}
+    volumes:
+      - ${SERVER_ROOT}/transmission/config:/config
+      - ${SERVER_ROOT}/transmission/torrents:/watch
+      - ${MEDIA_ROOT}:/downloads
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission.rule=Host(`dl.${DOMAIN}`)"
+      - "traefik.http.routers.transmission.entrypoints=websecure"
+      - "traefik.http.routers.transmission.tls.certresolver=myresolver"

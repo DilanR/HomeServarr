@@ -1,0 +1,14 @@
+services:
+  wizarr:
+    container_name: wizarr
+    image: ghcr.io/wizarrrr/wizarr:latest
+    restart: unless-stopped
+    volumes:
+      - ${SERVER_ROOT}/wizarr/config:/data/database
+    ports:
+      - 5690:5690
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wizarr.rule=Host(`signup.${DOMAIN}`)"
+      - "traefik.http.routers.wizarr.entrypoints=websecure"
+      - "traefik.http.routers.wizarr.tls.certresolver=myresolver"      

@@ -1,0 +1,86 @@
+services:
+              #### Media ####
+  jellyfin:
+    extends:
+      file: ./compose/media/jellyfin.yml
+      service: jellyfin
+    networks:
+      - homeservarr_bridge
+
+  jellyseerr:
+    extends:
+      file: ./compose/media/jellyseerr.yml
+      service: jellyseerr
+    networks:
+      - homeservarr_bridge
+
+  prowlarr:
+    extends:
+      file: ./compose/media/prowlarr.yml
+      service: prowlarr
+    networks:
+      - homeservarr_bridge
+        
+  radarr:
+    extends:
+      file: ./compose/media/radarr.yml
+      service: radarr
+    networks:
+      - homeservarr_bridge
+
+  sonarr:
+    extends:
+      file: ./compose/media/sonarr.yml
+      service: sonarr
+    networks:
+      - homeservarr_bridge
+
+  bazarr:
+    extends:
+      file: ./compose/media/bazarr.yml
+      service: bazarr
+    networks:
+      - homeservarr_bridge
+        
+  wizarr:
+    extends:
+      file: ./compose/media/wizarr.yml
+      service: wizarr 
+    networks:
+      - homeservarr_bridge
+
+              #### network ####
+
+  traefik:
+    extends:
+      file: ./compose/network/traefik.yml
+      service: traefik
+    networks:
+      - homeservarr_bridge
+
+  transmission:
+    extends:
+      file: ./compose/network/transmission.yml
+      service: transmission
+    networks:
+      - homeservarr_bridge
+
+  flaresolverr:
+    extends:
+      file: ./compose/network/flaresolverr.yml
+      service: flaresolverr
+    networks:
+      - homeservarr_bridge
+
+              #### tools ####
+
+  vaultwarden:
+    extends:
+      file: ./compose/tools/vaultwarden.yml
+      service: vaultwarden
+    networks:
+      - homeservarr_bridge
+
+networks:
+  homeservarr_bridge:
+    external: true

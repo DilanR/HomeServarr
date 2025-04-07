@@ -1,0 +1,20 @@
+services:
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${SERVER_ROOT}/radarr/config:/config
+      - ${JELLYFIN_MEDIA_ROOT}/Movies:/movies
+      - ${MEDIA_ROOT}:/downloads
+    ports:
+      - 7878:7878
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.${DOMAIN}`)"
+      - "traefik.http.routers.radarr.entrypoints=websecure"
+      - "traefik.http.routers.radarr.tls.certresolver=myresolver"
